@@ -10,6 +10,7 @@ MAN_SRC    := $(shell git remote get-url origin)
 MAN_TARGET  = $(BIN_TARGET).$(MAN_SEC)
 PREFIX     ?= /usr/local
 STRIP      := $(shell which strip)
+SUDO       := $(shell which sudo)
 TARGETS     = $(BIN_TARGET) $(MAN_TARGET)
 UNAME      := $(shell uname)
 
@@ -26,7 +27,7 @@ strip: $(BIN_TARGET)
 	$(STRIP) $<
 
 install: $(TARGETS)
-	install $^ $(BINDIR)
+	$(SUDO) install $^ $(BINDIR)
 
 $(BIN_TARGET):	cpulimit.c $(LIBS)
 	$(CC) -o cpulimit cpulimit.c $(LIBS) $(CFLAGS)
