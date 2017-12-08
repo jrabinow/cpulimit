@@ -1,20 +1,20 @@
-CC?=gcc
-CFLAGS?=-O2 -Wall -g -D_GNU_SOURCE
-BIN_TARGET=cpulimit
-MAN_TARGET=$(BIN_TARGET).$(MAN_SEC)
-TARGETS=$(BIN_TARGET) $(MAN_TARGET)
-LIBS=list.o process_iterator.o process_group.o
-UNAME := $(shell uname)
-PREFIX?=/usr/local
-BINDIR?=$(PREFIX)/bin
-HELP2MAN := $(shell which help2man)
-STRIP := $(shell which strip)
-MAN_NAME := "CPU Utilization Limiter"
-MAN_SEC := 1
-MAN_SRC := $(shell git remote get-url origin)
+BINDIR     ?= $(PREFIX)/bin
+BIN_TARGET  = cpulimit
+CC         ?=  gcc
+CFLAGS     ?= -O2 -Wall -g -D_GNU_SOURCE
+HELP2MAN   := $(shell which help2man)
+LIBS        = list.o process_iterator.o process_group.o
+MAN_NAME   := "CPU Utilization Limiter"
+MAN_SEC    := 1
+MAN_SRC    := $(shell git remote get-url origin)
+MAN_TARGET  = $(BIN_TARGET).$(MAN_SEC)
+PREFIX     ?= /usr/local
+STRIP      := $(shell which strip)
+TARGETS     = $(BIN_TARGET) $(MAN_TARGET)
+UNAME      := $(shell uname)
 
 ifeq ($(UNAME), FreeBSD)
-LIBS+=-lkvm
+LIBS       += -lkvm
 endif
 
 all::	$(TARGETS) $(LIBS)
