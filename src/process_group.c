@@ -31,6 +31,10 @@
 
 #include <assert.h>
 
+#ifdef __sun__
+#include <libgen.h>
+#endif
+
 #include "process_iterator.h"
 #include "process_group.h"
 #include "list.h"
