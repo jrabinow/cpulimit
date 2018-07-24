@@ -38,8 +38,10 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#ifndef __sun__
-#include <sys/sysctl.h>
+#ifdef __ANDROID__
+# include <linux/sysctl.h>
+#elif !defined(__sun__)
+# include <sys/sysctl.h>
 #endif
 #include <sys/resource.h>
 #include <sys/types.h>
