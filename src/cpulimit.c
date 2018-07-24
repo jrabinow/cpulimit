@@ -108,7 +108,7 @@ static void quit(int sig) {
         close_process_group(&pgroup);
     }
     //fix ^C little problem
-    printf("\r");
+    putc('\r');
     fflush(stdout);
     exit(0);
 }
@@ -149,11 +149,11 @@ static void increase_priority() {
     }
     if (priority != old_priority) {
         if (verbose) {
-            printf("Priority changed to %d\n", priority);
+            fprintf(stderr, "Priority changed to %d\n", priority);
         }
     } else {
         if (verbose) {
-            printf("Warning: Cannot change priority. Run as root or renice for best results.\n");
+            fprintf(stderr, "Warning: Cannot change priority. Run as root or renice for best results.\n");
         }
     }
 }
@@ -222,7 +222,7 @@ void limit_process(pid_t pid, double limit, int include_children, float minimum_
     init_process_group(&pgroup, pid, include_children);
 
     if (verbose) {
-        printf("Members in the process group owned by %d: %d\n", pgroup.target_pid, pgroup.proclist->count);
+        fprintf(stderr, "Members in the process group owned by %d: %d\n", pgroup.target_pid, pgroup.proclist->count);
     }
 
     //rate at which we are keeping active the processes (range 0-1)
@@ -233,7 +233,7 @@ void limit_process(pid_t pid, double limit, int include_children, float minimum_
 
         if (pgroup.proclist->count==0) {
             if (verbose) {
-                printf("No more processes.\n");
+                fprintf(stderr, "No more processes.\n");
             }
             break;
         }
@@ -269,10 +269,10 @@ void limit_process(pid_t pid, double limit, int include_children, float minimum_
 
         if (verbose) {
             if (c%200==0) {
-                printf("\n%%CPU\twork quantum\tsleep quantum\tactive rate\n");
+                fprintf(stderr, "\n%%CPU\twork quantum\tsleep quantum\tactive rate\n");
             }
             if (c%10==0 && c>0) {
-                printf("%0.2lf%%\t%6ld us\t%6ld us\t%0.2lf%%\n", pcpu*100, twork.tv_nsec/1000, tsleep.tv_nsec/1000, workingrate*100);
+                fprintf(stderr, "%0.2lf%%\t%6ld us\t%6ld us\t%0.2lf%%\n", pcpu*100, twork.tv_nsec/1000, tsleep.tv_nsec/1000, workingrate*100);
             }
         }
 
@@ -455,7 +455,7 @@ int main(int argc, char **argv) {
 
     //print the number of available cpu
     if (verbose) {
-        printf("%d cpu detected\n", NCPU);
+        fprintf(stderr, "%d cpu detected\n", NCPU);
     }
 
     if (command_mode) {
@@ -473,11 +473,11 @@ int main(int argc, char **argv) {
         cmd_args[i] = NULL;
 
         if (verbose) {
-            printf("Running command: '%s", cmd);
+            fprintf(stderr, "Running command: '%s", cmd);
             for (i=1; i<argc-optind; i++) {
-                printf(" %s", cmd_args[i]);
+                fprintf(stderr, " %s", cmd_args[i]);
             }
-            printf("'\n");
+            fprintf(stderr, "'\n");
         }
 
         int child = fork();
@@ -503,16 +503,16 @@ int main(int argc, char **argv) {
                 waitpid(limiter, &status_limiter, 0);
                 if (WIFEXITED(status_process)) {
                     if (verbose) {
-                        printf("Process %d terminated with exit status %d\n", child, (int)WEXITSTATUS(status_process));
+                        fprintf(stderr, "Process %d terminated with exit status %d\n", child, (int)WEXITSTATUS(status_process));
                     }
                     exit(WEXITSTATUS(status_process));
                 }
-                printf("Process %d terminated abnormally\n", child);
+                fprintf(stderr, "Process %d terminated abnormally\n", child);
                 exit(status_process);
             } else {
                 //limiter code
                 if (verbose) {
-                    printf("Limiting process %d\n",child);
+                    fprintf(stderr, "Limiting process %d\n",child);
                 }
                 limit_process(child, limit, include_children, minimum_cpu_usage);
                 exit(0);
@@ -527,27 +527,27 @@ int main(int argc, char **argv) {
             //search by pid
             ret = find_process_by_pid(pid);
             if (ret == 0) {
-                printf("No process found\n");
+                fprintf(stderr, "No process found\n");
             } else if (ret < 0) {
-                printf("Process found but you aren't allowed to control it\n");
+                fprintf(stderr, "Process found but you aren't allowed to control it\n");
             }
         } else {
             //search by file or path name
             ret = find_process_by_name(exe);
             if (ret == 0) {
-                printf("No process found\n");
+                fprintf(stderr, "No process found\n");
             } else if (ret < 0) {
-                printf("Process found but you aren't allowed to control it\n");
+                fprintf(stderr, "Process found but you aren't allowed to control it\n");
             } else {
                 pid = ret;
             }
         }
         if (ret > 0) {
             if (ret == cpulimit_pid) {
-                printf("Target process %d is cpulimit itself! Aborting because it makes no sense\n", ret);
+                fprintf(stderr, "Target process %d is cpulimit itself! Aborting because it makes no sense\n", ret);
                 exit(1);
             }
-            printf("Process %d found\n", pid);
+            fprintf(stderr, "Process %d found\n", pid);
             //control
             limit_process(pid, limit, include_children, minimum_cpu_usage);
         }
