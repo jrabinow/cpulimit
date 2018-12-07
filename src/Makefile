@@ -4,6 +4,7 @@ CC         ?=  gcc
 CFLAGS     ?= -O2 -Wall -g -D_GNU_SOURCE
 HELP2MAN   := $(shell which help2man)
 LIBS        = list.o process_iterator.o process_group.o
+MANDIR     ?= $(PREFIX)/share/man/man1
 MAN_NAME   := "CPU Utilization Limiter"
 MAN_SEC    := 1
 MAN_SRC    := $(shell git remote get-url origin)
@@ -27,7 +28,8 @@ strip: $(BIN_TARGET)
 	$(STRIP) $<
 
 install: $(TARGETS)
-	$(SUDO) install $^ $(BINDIR)
+	$(SUDO) install $(BIN_TARGET) $(BINDIR)
+	$(SUDO) install $(MAN_TARGET) $(MANDIR)
 
 $(BIN_TARGET):	cpulimit.c $(LIBS)
 	$(CC) -o cpulimit cpulimit.c $(LIBS) $(CFLAGS)
