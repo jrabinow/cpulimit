@@ -23,7 +23,7 @@
  * This is a simple program to limit the cpu usage of a process
  * If you modify this code, send me a copy please
  *
- * Get the latest version at: http://github.com/opsengine/cpulimit
+ * Get the latest version at: http://github.com/denji/cpulimit
  *
  */
 
@@ -38,9 +38,11 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+/*  This breaks under musl and isn't necessary under glibc
 #ifndef __sun__
 #include <sys/sysctl.h>
 #endif
+*/
 #include <sys/resource.h>
 #include <sys/types.h>
 #include <sys/wait.h>

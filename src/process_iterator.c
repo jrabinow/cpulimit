@@ -25,6 +25,7 @@
 #ifdef __sun__
 #include <procfs.h>
 #elif !defined __APPLE__
+#include <unistd.h>
 #include <sys/procfs.h>
 #endif
 #include <time.h>

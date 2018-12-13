@@ -1,7 +1,7 @@
 BINDIR     ?= $(PREFIX)/bin
 BIN_TARGET  = cpulimit
-CC         ?=  gcc
-CFLAGS     ?= -O2 -Wall -g -D_GNU_SOURCE
+CC         ?= gcc
+CFLAGS     ?= -Os -Wall -g -D_GNU_SOURCE
 HELP2MAN   := $(shell which help2man)
 LIBS        = list.o process_iterator.o process_group.o
 MANDIR     ?= $(PREFIX)/share/man/man1
@@ -22,7 +22,7 @@ endif
 all::	$(TARGETS) $(LIBS)
 
 static:
-	$(MAKE) all CFLAGS="$(CFLAGS) --static"
+	$(MAKE) all CFLAGS="$(CFLAGS) --static" CC="musl-gcc"
 
 strip: $(BIN_TARGET)
 	$(STRIP) $<
