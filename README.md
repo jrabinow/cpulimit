@@ -20,8 +20,7 @@ The latest available code is here: https://github.com/denji/cpulimit
 
 On Linux/macOS:
 
-    $ make
-    # cp src/cpulimit /usr/bin
+    $ make ; sudo make install
 
 On *BSD:
 

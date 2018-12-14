@@ -28,8 +28,8 @@ strip: $(BIN_TARGET)
 	$(STRIP) $<
 
 install: $(TARGETS)
-	$(SUDO) install $(BIN_TARGET) $(BINDIR)
-	$(SUDO) install $(MAN_TARGET) $(MANDIR)
+	$(SUDO) install -D $(BIN_TARGET) $(BINDIR)/$(BIN_TARGET)
+	$(SUDO) install -D $(MAN_TARGET) $(MANDIR)/$(MAN_TARGET)
 
 $(BIN_TARGET):	cpulimit.c $(LIBS)
 	$(CC) -o cpulimit cpulimit.c $(LIBS) $(CFLAGS)
