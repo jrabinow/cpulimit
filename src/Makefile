@@ -53,5 +53,5 @@ process_group.o: process_group.c process_group.h process_iterator.o list.o
 	$(CC) -c process_group.c $(CFLAGS)
 
 clean:
-	rm -f *~ *.o static strip isntall static_install $(TARGETS)
+	rm -f *~ *.o static strip install static_install $(TARGETS)
 
