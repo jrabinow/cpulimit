@@ -50,7 +50,16 @@ static int read_process_info(pid_t pid, struct process *p) {
 	p->starttime = psinfo.pr_start.tv_sec * 1.0e03 + psinfo.pr_start.tv_nsec / 1.0e06;
 	strcpy(p->command, psinfo.pr_psargs);
 
-	return 0;
+	/**
+	 * per proc(4):
+	 *
+	 *   If the process is a zombie, pr_nlwp, pr_nzomb, and
+	 *   pr_lwp.pr_lwpid are zero and the other fields of pr_lwp
+	 *   are undefined
+	 *
+	 * In this case, we'll return -1 to the caller
+	 */
+	return psinfo.pr_nlwp?0:-1;
 }
 
 static pid_t getppid_of(pid_t pid) {
@@ -94,8 +103,7 @@ int get_next_process(struct process_iterator *it, struct process *p) {
 	while ((dit = readdir(it->dip))) {
 		p->pid = atoi(dit->d_name);
 		if (it->filter->pid != 0 && it->filter->pid != p->pid && !is_child_of(p->pid, it->filter->pid)) continue;
-		read_process_info(p->pid, p);
-		break;
+		if (!read_process_info(p->pid, p)) break;
 	}
 
 	if (!dit) {
