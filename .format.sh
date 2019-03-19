@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Search in the script folder
 pushd "$(dirname $0)" >/dev/null
 CWD="$(pwd -P)"
 popd >/dev/null
-FILES=$(find $CWD/{tests,src} -iname '*.[ch]' -type f)
+FILES=$(find $CWD/{test,src} -iname '*.[ch]' -type f)
 
 # The file format in accordance with the style defined in .astylerc
 astyle -v --options='.astylerc' ${FILES} || (echo 'astyle failed'; exit 1);
