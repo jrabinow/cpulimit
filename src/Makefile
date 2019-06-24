@@ -21,15 +21,21 @@ endif
 
 all::	$(TARGETS) $(LIBS)
 
-static:
+static: $(TARGETS) $(LIBS)
 	$(MAKE) all CFLAGS="$(CFLAGS) --static" CC="musl-gcc"
+	touch static
 
 strip: $(BIN_TARGET)
 	$(STRIP) $<
+	touch strip
 
 install: $(TARGETS)
 	$(SUDO) install -D $(BIN_TARGET) $(BINDIR)/$(BIN_TARGET)
 	$(SUDO) install -D $(MAN_TARGET) $(MANDIR)/$(MAN_TARGET)
+	touch install
+
+static_install: static strip install
+	touch static_install
 
 $(BIN_TARGET):	cpulimit.c $(LIBS)
 	$(CC) -o cpulimit cpulimit.c $(LIBS) $(CFLAGS)
@@ -47,5 +53,5 @@ process_group.o: process_group.c process_group.h process_iterator.o list.o
 	$(CC) -c process_group.c $(CFLAGS)
 
 clean:
-	rm -f *~ *.o $(TARGETS)
+	rm -f *~ *.o static strip install static_install $(TARGETS)
 

@@ -13,13 +13,19 @@ endif
 
 all::	$(TARGETS)
 
-static:
+static: $(TARGETS)
 	$(MAKE) all CFLAGS="$(CFLAGS) --static"
+	touch static
 
 strip: $(TARGETS)
 	$(STRIP) $(TARGETS)
+	touch strip
 
-install::
+install:: $(TARGETS)
+	touch install
+
+static_install:: static strip
+	touch static_install
 
 busy:	busy.c
 	$(CC) -o busy busy.c $(SYSLIBS) $(CFLAGS)
