@@ -110,7 +110,7 @@ static void quit(int sig) {
         close_process_group(&pgroup);
     }
     //fix ^C little problem
-    putc('\r');
+    putc('\r', stdout);
     fflush(stdout);
     exit(0);
 }
